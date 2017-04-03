@@ -45,7 +45,7 @@ function stationLatestReading(station) {
     "<ul class='c-station-latest-reading--list'>",
     `<li>date: <span class='js-reading-date' ${idRef}></span></li>`,
     `<li>time: <span class='js-reading-time' ${idRef}></span></li>`,
-    `<li>rainfall (mm): <span class='js-reading-value' ${idRef}></span></li>`,
+    `<li>Measurement (m): <span class='js-reading-value' ${idRef}></span></li>`,
     '</ul>',
   ];
 

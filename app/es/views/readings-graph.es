@@ -40,7 +40,7 @@ function createSeries(totals) {
   }];
 }
 
-/* Return the period over which we display rainfall */
+/* Return the period over which we display */
 function readingDisplayPeriod() {
   return moment
     .utc()
@@ -60,7 +60,7 @@ function displayLatest(latest, stationId) {
 
 
 /**
- * View class that manages collecting a one-month window of rainfall data for a
+ * View class that manages collecting a one-month window of data for a
  * given station and displaying that as a graph
  */
 class ReadingsGraphView {
