@@ -61,7 +61,10 @@ class ReadingsGraphView {
     displayLatest(latestMeasure(measures), this.stationRef.stationId());
     const totals = aggregateMeasures(measures);
     const stationId = this.stationRef.stationId();
-    const g = new Dygraph($(`li[data-station-id='${stationId}'] .ct-chart`).get(0),
+    new Dygraph($(`li[data-station-id='${stationId}'] .ct-chart`).css({
+      width: 340,
+      height: 250,
+    }).get(0),
       totals, {
         fillGraph: true,
         labels: ['date', 'm'],
