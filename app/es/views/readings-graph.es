@@ -6,9 +6,6 @@ import moment from 'moment';
 import { stationMeasures } from '../services/gauge-api.es';
 import Dygraph from 'dygraphs';
 
-window.Chartist = Chartist;
-require('chartist-plugin-axistitle');
-
 const DEFAULT_LIMIT = 3000; // 2976 for a month of results. 4 (hour) * 24 (day) * 31
 
 /* Utility function to aggregate to group measures together */
