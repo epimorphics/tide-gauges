@@ -1,5 +1,5 @@
 import { _ } from 'lodash';
-import { allStations, stationDetails } from '../services/rainfall-api.es';
+import { allStations, stationDetails } from '../services/gauge-api.es';
 
 /** Cached array of rainfall stations */
 let stations;

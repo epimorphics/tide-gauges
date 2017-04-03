@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import _ from 'lodash';
 import { stationWithId } from '../models/stations.es';
-import RainfallGraphView from './rainfall-graph.es';
+import RainfallGraphView from './readings-graph.es';
 
 /* Support functions */
 
@@ -94,7 +94,7 @@ class StationDetailsView {
   }
 
   initEvents() {
-    $('body').on('rainfall-demo.selected', _.bind(this.onStationSelected, this));
+    $('body').on('map.selected', _.bind(this.onStationSelected, this));
   }
 
   onStationSelected(event, stationId, selected) {
