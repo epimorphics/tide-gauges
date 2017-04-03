@@ -4,7 +4,6 @@ import _ from 'lodash';
 import $ from 'jquery';
 import moment from 'moment';
 import { stationMeasures } from '../services/gauge-api.es';
-import { READINGS_DATE_FORMAT } from '../models/reading.es';
 
 const Chartist = require('chartist');
 
@@ -15,17 +14,7 @@ const DEFAULT_LIMIT = 3000; // 2976 for a month of results. 4 (hour) * 24 (day) 
 
 /* Utility function to aggregate to group measures together */
 function aggregateMeasures(measures) {
-  const agMeasures = _.groupBy(measures, measure => measure.formattedDate());
-  const totals = _.map(agMeasures, (measureGroups, fDate) => {
-    const total = _.sum(
-      _.map(measureGroups, measure => measure.value()),
-   );
-    const date = moment(fDate, READINGS_DATE_FORMAT).toDate();
-
-    return [date, total];
-  });
-
-  return totals.sort((d0, d1) => d1[0].getTime() - d0[0].getTime());
+  return _.map(measures, measureGroups => [measureGroups.dateTime(), measureGroups.value()]);
 }
 
 /* Return the latest of a series of measures */
@@ -51,8 +40,8 @@ function createSeries(totals) {
   }];
 }
 
-/* Return the period over which we display graph */
-function graphDisplayPeriod() {
+/* Return the period over which we display rainfall */
+function readingDisplayPeriod() {
   return moment
     .utc()
     .subtract(1, 'months')
@@ -71,16 +60,15 @@ function displayLatest(latest, stationId) {
 
 
 /**
- * View class that manages collecting a one-month window of data for a
+ * View class that manages collecting a one-month window of rainfall data for a
  * given station and displaying that as a graph
  */
-class RainfallGraphView {
+class ReadingsGraphView {
   constructor(station) {
     this.stationRef = station;
     stationMeasures(station.stationId(), {
-      since: graphDisplayPeriod(),
+      since: readingDisplayPeriod(),
       _limit: DEFAULT_LIMIT,
-      parameter: 'rainfall',
       _sorted: true,
     }).then(_.bind(this.collectMeasures, this));
   }
@@ -101,7 +89,7 @@ class RainfallGraphView {
       plugins: [
         Chartist.plugins.ctAxisTitle({
           axisY: {
-            axisTitle: 'Rainfall (mm)',
+            axisTitle: 'Tide Gauge (m OD)',
             axisClass: 'ct-axis-title',
             offset: {
               x: 0,
@@ -120,4 +108,4 @@ class RainfallGraphView {
   }
 }
 
-export { RainfallGraphView as default };
+export { ReadingsGraphView as default };
