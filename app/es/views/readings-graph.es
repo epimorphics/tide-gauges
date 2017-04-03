@@ -10,7 +10,7 @@ const DEFAULT_LIMIT = 3000; // 2976 for a month of results. 4 (hour) * 24 (day) 
 
 /* Utility function to aggregate to group measures together */
 function aggregateMeasures(measures) {
-  return _.map(measures, measureGroups => [measureGroups.jsDate(), measureGroups.value()]);
+  return _.map(measures, measureGroups => [measureGroups.jsDate(), measureGroups.value()]).reverse();
 }
 
 /* Return the latest of a series of measures */
