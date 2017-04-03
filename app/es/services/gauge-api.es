@@ -50,7 +50,7 @@ function wrapValues(ValueClass, items) {
  * of the array will be a Station value object
  */
 export function allStations(options) {
-  const params = _.extend({ type: 'TideGauge', _view: 'full' }, options);
+  const params = _.extend({ type: 'TideGauge', unitName: 'mAOD', _view: 'full' }, options);
   return getJSON(STATIONS_ENDPOINT, params)
     .then(resultItems)
     .then(_.partial(wrapValues, Station));
