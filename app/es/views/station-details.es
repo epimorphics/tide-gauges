@@ -40,16 +40,12 @@ function stationSummary(station) {
 function stationLatestReading(station) {
   const idRef = `data-station-id='${station.stationId()}' `;
 
-  const buf = [
-    "<h4 class='c-station-latest-reading--heading'>Latest reading</h4>",
-    "<ul class='c-station-latest-reading--list'>",
-    `<li>date: <span class='js-reading-date' ${idRef}></span></li>`,
-    `<li>time: <span class='js-reading-time' ${idRef}></span></li>`,
-    `<li>Measurement (m): <span class='js-reading-value' ${idRef}></span></li>`,
-    '</ul>',
-  ];
-
-  return buf.join('\n');
+  return `<h4 class='c-station-latest-reading--heading'>Latest reading</h4>
+    <ul class='c-station-latest-reading--list'>
+    <li>date: <span class='js-reading-date' ${idRef}></span></li>
+    <li>time: <span class='js-reading-time' ${idRef}></span></li>
+    <li>Measurement (m): <span class='js-reading-value' ${idRef}></span></li>
+    </ul>`;
 }
 
 function stationDescription(station) {
