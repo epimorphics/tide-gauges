@@ -4,8 +4,7 @@ import _ from 'lodash';
 import $ from 'jquery';
 import moment from 'moment';
 import { stationMeasures } from '../services/gauge-api.es';
-
-const Chartist = require('chartist');
+import Dygraph from 'dygraphs';
 
 window.Chartist = Chartist;
 require('chartist-plugin-axistitle');
@@ -14,7 +13,7 @@ const DEFAULT_LIMIT = 3000; // 2976 for a month of results. 4 (hour) * 24 (day) 
 
 /* Utility function to aggregate to group measures together */
 function aggregateMeasures(measures) {
-  return _.map(measures, measureGroups => [measureGroups.dateTime(), measureGroups.value()]);
+  return _.map(measures, measureGroups => [measureGroups.jsDate(), measureGroups.value()]);
 }
 
 /* Return the latest of a series of measures */
@@ -27,17 +26,6 @@ function latestMeasure(measures) {
   });
 
   return latest;
-}
-
-/**
- * Transform an array of pairs of data, of the form `[data, value]` into
- * an array of dates and an array of values. This is similar to the Lodash
- * zip function, but we need to use the spread operator to expand the arrays
- */
-function createSeries(totals) {
-  return [{
-    data: _.map(totals, pair => ({ x: pair[0], y: pair[1] })),
-  }];
 }
 
 /* Return the period over which we display */
@@ -58,7 +46,6 @@ function displayLatest(latest, stationId) {
     .text(latest.formattedTime());
 }
 
-
 /**
  * View class that manages collecting a one-month window of data for a
  * given station and displaying that as a graph
@@ -77,34 +64,13 @@ class ReadingsGraphView {
     displayLatest(latestMeasure(measures), this.stationRef.stationId());
     const totals = aggregateMeasures(measures);
     const stationId = this.stationRef.stationId();
-    const graphOptions = {
-      axisX: {
-        type: Chartist.FixedScaleAxis,
-        divisor: 4,
-        labelInterpolationFnc: value => moment(value).format('D MMM'),
-      },
-      axisY: {
-        labelInterpolationFnc: value => `${value.toFixed(1)}`,
-      },
-      plugins: [
-        Chartist.plugins.ctAxisTitle({
-          axisY: {
-            axisTitle: 'Tide Gauge (m OD)',
-            axisClass: 'ct-axis-title',
-            offset: {
-              x: 0,
-              y: 12,
-            },
-            textAnchor: 'middle',
-            flipTitle: true,
-          },
-          axisX: {},
-        }),
-      ],
-    };
-    new Chartist.Bar(`li[data-station-id='${stationId}'] .ct-chart`,
-                      { series: createSeries(totals) },
-                      graphOptions);
+    const g = new Dygraph($(`li[data-station-id='${stationId}'] .ct-chart`).get(0),
+      totals, {
+        fillGraph: true,
+        labels: ['date', 'm'],
+        xlabel: 'Date',
+        ylabel: 'mOD',
+      });
   }
 }
 
