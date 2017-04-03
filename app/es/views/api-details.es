@@ -30,10 +30,10 @@ function showApiDetails(stationId, stationName) {
                `/flood-monitoring/id/stations/${stationId}/measures`);
   setHref('.js-station-readings-link',
                `/flood-monitoring/id/stations/${stationId}/readings`,
-               '?_limit=100&_sorted&parameter=rainfall');
+               '?_limit=100&_sorted&type=TideGauge');
   setHref('.js-station-readings-today-link',
                `/flood-monitoring/id/stations/${stationId}/readings`,
-               '?today&_sorted&parameter=rainfall');
+               '?today&_sorted&type=TideGauge');
 
   $('#apiDetailsModal').modal('show');
 }
