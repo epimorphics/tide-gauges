@@ -69,6 +69,7 @@ class ReadingsGraphView {
         labels: ['date', 'm'],
         xlabel: 'Date',
         ylabel: 'mOD',
+        sigFigs: 2,
       });
   }
 }
