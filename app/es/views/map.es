@@ -55,7 +55,7 @@ class MapView {
     const osm = new L.TileLayer(osmUrl, { minZoom: 0, maxZoom: 12, attribution: osmAttrib });
 
     // start the map in South-East England
-    this.mapRef.setView(new L.LatLng(53, -1), 6);
+    this.mapRef.setView(new L.LatLng(55.5, -2), 5);
     this.mapRef.addLayer(osm);
 
     // marker images path
