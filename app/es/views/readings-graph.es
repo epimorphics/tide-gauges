@@ -3,8 +3,8 @@
 import _ from 'lodash';
 import $ from 'jquery';
 import moment from 'moment';
-import { stationMeasures } from '../services/gauge-api.es';
 import Dygraph from 'dygraphs';
+import { stationMeasures } from '../services/gauge-api.es';
 
 const DEFAULT_LIMIT = 3000; // 2976 for a month of results. 4 (hour) * 24 (day) * 31
 
