@@ -62,8 +62,7 @@ class ReadingsGraphView {
     const totals = aggregateMeasures(measures);
     const stationId = this.stationRef.stationId();
     new Dygraph($(`li[data-station-id='${stationId}'] .ct-chart`).css({
-      width: 340,
-      height: 250,
+      width: 'auto',
     }).get(0),
       totals, {
         fillGraph: true,
