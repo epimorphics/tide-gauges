@@ -14,10 +14,6 @@ function stationSummary(station) {
     "<ul class='c-station-detail--summary-list'>",
   ];
 
-  if (station.get('label')) {
-    buf.push(`<li>label: ${station.get('label')}</li>`);
-  }
-
   buf.push(`<li>Station ID: ${station.stationId()}</li>`);
 
   if (station.status()) {
