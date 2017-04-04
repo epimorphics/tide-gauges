@@ -20,9 +20,13 @@ class Station {
 
   /** @return The label for this station. Since actual station name has now been redacted, we
    *  interpret this to refer to the station ID instead. */
-  label() {
+  stationId() {
     const id = this.stationId();
     return id ? `Station ${id}` : '';
+  }
+
+  label() {
+    return this.get('label');
   }
 
   riverName() {
