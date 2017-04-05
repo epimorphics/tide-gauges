@@ -1,5 +1,5 @@
 /* Simple service object for retrieving contents from the HTTP API */
-import request from 'superagent';
+import request from 'superagent-bluebird-promise';
 
 const POSTCODE_ENDPOINT = '//api.postcodes.io/postcodes';
 

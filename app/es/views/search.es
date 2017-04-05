@@ -15,6 +15,9 @@ const MAX_RESULTS = 20;
 /** Nearness of location search results to a point, in km */
 const LOCATION_SEARCH_KM = 10;
 
+/** API call promise. Cancel to start afresh **/
+let apiPromise;
+
 /* Support functions */
 
 /** Notify other components that the selection state has changed */
@@ -88,8 +91,9 @@ class SearchView {
    * @param {Boolean} If true, show all results
    */
   searchBy(searchStr, all) {
+    if (apiPromise) { apiPromise.cancel(); }
     if (searchStr !== '' && searchStr.length >= MIN_SEARCH_LENGTH) {
-      matchStations({ label: searchStr }).then((results) => {
+      apiPromise = matchStations({ label: searchStr }).then((results) => {
         if (results.length > 0) {
           this.summariseSearchResults(results);
           this.showCurrentSearchResults(results, all);
@@ -108,7 +112,8 @@ class SearchView {
    * @param {String} search string that does not match any station names
    */
   postcodeSearch(searchStr) {
-    lookupPostcode(searchStr).then((result) => {
+    if (apiPromise) { apiPromise.cancel(); }
+    apiPromise = lookupPostcode(searchStr).then((result) => {
       if (result) {
         this.searchByLocation(result.latitude, result.longitude);
       } else {

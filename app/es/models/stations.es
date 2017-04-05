@@ -1,5 +1,10 @@
 import { _ } from 'lodash';
+import Promise from 'bluebird';
 import { allStations, stationDetails } from '../services/gauge-api.es';
+
+Promise.config({
+  cancellation: true,
+});
 
 /** Cached array of stations */
 let stations;
