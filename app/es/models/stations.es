@@ -70,7 +70,7 @@ export function catchmentNames() {
  * @return A promise of station objects that match a given input string
  */
 export function matchStations(conditions) {
-  const pattern = _.mapValues(conditions, searchStr => new RegExp(searchStr, 'ig'));
+  const pattern = _.mapValues(conditions, searchStr => new RegExp(searchStr.replace(/[\W_]+/g, ''), 'ig'));
 
   return stationsCollection()
     .then(stns => _.filter(stns, station => matchStation(station, pattern)));
