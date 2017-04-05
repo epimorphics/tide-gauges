@@ -75,7 +75,7 @@ function stationDescription(station) {
           </select>
         </div>
         <h3 class='c-station-detail--title'>${label}
-          <button type="button" class="c-api-details-btn js-action-show-api-details" ${dsi} ${dsn}>api details</button>
+          <button type="button" class="c-api-details-btn js-action-show-api-details" ${dsi} ${dsn}>get the data</button>
         </h3>
       </div>
       <div class='col-sm-12'>
