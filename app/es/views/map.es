@@ -66,7 +66,17 @@ class MapView {
   }
 
   initMap() {
-    this.mapRef = L.map('map').setView([51.505, -0.09], 13);
+    this.mapRef = L.map('map', {
+      maxBounds: [
+        [
+          47.309034247,
+          -13.88671875,
+        ],
+        [
+          62.91523303,
+          8.525390625,
+        ]],
+    }).setView([51.505, -0.09], 13);
 
     const osmUrl = '//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
     const osmAttrib = "Map data © <a href='//openstreetmap.org'>OpenStreetMap</a> contributors";
