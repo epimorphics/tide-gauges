@@ -8,7 +8,6 @@ require('bootstrap-sass');
 const CONTENT_TYPES = ['html', 'json', 'csv'];
 
 const API_ROOT = 'http://environment.data.gov.uk';
-// const API_ROOT = 'http://ea-floods-testing.epimorphics.net';
 
 /* Support functions */
 
