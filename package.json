@@ -60,5 +60,10 @@
   },
   "author": "Ian Dickinson, Epimorphics Ltd",
   "license": "MIT",
-  "private": true
+  "private": true,
+  "babel": {
+    "presets": [
+      "es2015"
+    ]
+  }
 }

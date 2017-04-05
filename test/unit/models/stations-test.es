@@ -33,7 +33,7 @@ describe('stations model', () => {
   it('should return a promise of all of the names of rivers', () =>
     riverNames().then((names) => {
       expect(names.length).to.be.above(0);
-      expect(names).to.include.members(['Cuckmere', 'Day Brook']);
+      expect(names).to.include.members(['Tide']);
       expect(names).to.not.contain(['']);
     }),
   );
@@ -41,23 +41,23 @@ describe('stations model', () => {
   it('should return a promise of all of the names of catchments', () =>
     catchmentNames().then((names) => {
       expect(names.length).to.be.above(0);
-      expect(names).to.include.members(['Cuckmere and Pevensey Levels']);
+      expect(names).to.include.members(['England - South Coast']);
       expect(names).to.not.contain(['']);
     }),
   );
 
   it('should match stations by name', () =>
-    matchStations({ label: '42' }).then((stations) => {
+    matchStations({ notation: 'E72639' }).then((stations) => {
       expect(stations.length).to.be.above(0);
       _.each(stations, (station) => {
-        expect(station.label().toLocaleLowerCase()).to.include('42');
+        expect(station.label().toLocaleLowerCase()).to.include('avonmouth');
       });
     }),
   );
 
   it('should return a station if the ID matches', () =>
-    stationWithId('52203').then((station) => {
-      expect(station.label()).to.equal('Station 52203');
+    stationWithId('E72639').then((station) => {
+      expect(station.label()).to.equal('Avonmouth Portbury');
     }),
   );
 

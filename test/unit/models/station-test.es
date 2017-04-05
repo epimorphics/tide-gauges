@@ -4,18 +4,31 @@ import { describe, it } from 'mocha';
 import Station from '../../../app/es/models/station.es';
 
 const STATION_FIXTURE = {
-  '@id': 'http://environment.data.gov.uk/flood-monitoring/id/stations/49172',
-  eaRegionName: 'South West',
-  easting: 199750,
-  gridReference: 'SW997804',
-  label: 'Rainfall station',
-  lat: 50.58935060776287,
-  long: -4.830394991377174,
-  measures: 'http://environment.data.gov.uk/flood-monitoring/id/measures/49172-rainfall-tipping_bucket_raingauge-t-15_min-mm',
-  northing: 80450,
-  notation: '49172',
-  stationReference: '49172',
-  type: 'http://environment.data.gov.uk/flood-monitoring/def/core/Station',
+  '@id': 'http://environment.data.gov.uk/flood-monitoring/id/stations/E72639',
+  RLOIid: '3014',
+  catchmentName: 'England - South Coast',
+  dateOpened: '2012-02-24',
+  eaAreaName: 'Anglian - Wessex',
+  eaRegionName: 'Anglian',
+  easting: 349530,
+  gridReference: 'ST 4953 7815',
+  label: 'Avonmouth Portbury',
+  lat: 51.49999,
+  long: -2.728468,
+  measures: 'http://environment.data.gov.uk/flood-monitoring/id/measures/E72639-level-tidal_level-Mean-15_min-mAOD',
+  northing: 178147,
+  notation: 'E72639',
+  riverName: 'Tide',
+  stageScale: 'http://environment.data.gov.uk/flood-monitoring/id/stations/E72639/stageScale',
+  stationReference: 'E72639',
+  status: 'http://environment.data.gov.uk/flood-monitoring/def/core/statusActive',
+  statusDate: '2015-11-18T12:15:00',
+  town: 'Avonmouth',
+  type: [
+    'http://environment.data.gov.uk/flood-monitoring/def/core/Coastal',
+    'http://environment.data.gov.uk/flood-monitoring/def/core/Station',
+    'http://environment.data.gov.uk/flood-monitoring/def/core/TideGauge',
+  ],
 };
 
 describe('Station', () => {
@@ -26,26 +39,26 @@ describe('Station', () => {
 
   it('can return the URI of the station', () => {
     const station = new Station(STATION_FIXTURE);
-    expect(station.uri()).to.equal('http://environment.data.gov.uk/flood-monitoring/id/stations/49172');
+    expect(station.uri()).to.equal(STATION_FIXTURE['@id']);
   });
 
   it('can return the location of the station given a spatial reference system', () => {
     const station = new Station(STATION_FIXTURE);
 
     const eastingNorthing = station.location('osgb');
-    expect(eastingNorthing.x).to.equal(199750);
-    expect(eastingNorthing.y).to.equal(80450);
+    expect(eastingNorthing.x).to.equal(STATION_FIXTURE.easting);
+    expect(eastingNorthing.y).to.equal(STATION_FIXTURE.northing);
     expect(eastingNorthing.srs).to.equal('osgb');
 
     const longLat = station.location('wgs84');
-    expect(longLat.x).to.be.closeTo(-4.830394991377174, 0.001);
-    expect(longLat.y).to.be.closeTo(50.58935060776287, 0.0001);
+    expect(longLat.x).to.be.closeTo(STATION_FIXTURE.long, 0.001);
+    expect(longLat.y).to.be.closeTo(STATION_FIXTURE.lat, 0.0001);
     expect(longLat.srs).to.equal('wgs84');
   });
 
   it('should return the label if defined', () => {
     const station = new Station(STATION_FIXTURE);
-    expect(station.label()).to.equal('Station 49172');
+    expect(station.label()).to.equal(STATION_FIXTURE.label);
   });
 
   it('should return an empty string if the label is not defined', () => {
@@ -59,7 +72,7 @@ describe('Station', () => {
   });
 
   it('should return an empty string if the river name is not defined', () => {
-    const station = new Station(STATION_FIXTURE);
+    const station = new Station({});
     expect(station.riverName()).to.equal('');
   });
 
@@ -69,7 +82,7 @@ describe('Station', () => {
   });
 
   it('should return an empty string if the catchment name is not defined', () => {
-    const station = new Station(STATION_FIXTURE);
+    const station = new Station({});
     expect(station.catchmentName()).to.equal('');
   });
 

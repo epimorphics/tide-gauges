@@ -135,7 +135,11 @@ function testUnitTask() {
   return gulp
     .src(['test/unit/**/*.+(js|es)'])
     .pipe(gulpMocha({
-       timeout: 5000
+      timeout: 5000,
+      compilers: [
+        'js:babel-core/register',
+        'es:babel-core/register'
+      ]
     }));
 }
 gulp.task('test:unit', testUnitTask);
