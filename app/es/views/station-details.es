@@ -51,29 +51,30 @@ function stationLatestReading(station) {
 function stationDescription(station) {
   const dsi = `data-station-id='${station.stationId()}'`;
   const dsn = `data-station-name='${station.label()}'`;
+  const label = station.label();
+  const summary = stationSummary(station);
+  const latestReadings = stationLatestReading(station);
 
-  return [
-    "<div class='row'>",
-    "  <div class='col-sm-12'>",
-    `    <h3 class='c-station-detail--title'>${station.label()}`,
-    `      <button type="button" class="c-api-details-btn js-action-show-api-details" ${dsi} ${dsn}>api details</button>`,
-    '    </h3>',
-    '  </div>',
-    "  <div class='col-sm-12'>",
-    "    <div class='row'>",
-    "      <div class='col-sm-6'>",
-    stationSummary(station),
-    '      </div>',
-    "      <div class='col-sm-6'>",
-    stationLatestReading(station),
-    '      </div>',
-    '    </div>',
-    '  </div>',
-    "  <div class='col-sm-12'>",
-    `    <div class='c-readings-graph ct-chart ct-double-octave' ${dsi}></div>`,
-    '  </div>',
-    '</div>',
-  ].join('\n');
+  return `<div class='row'>
+      <div class='col-sm-12'>
+        <h3 class='c-station-detail--title'>${label}
+          <button type="button" class="c-api-details-btn js-action-show-api-details" ${dsi} ${dsn}>api details</button>
+        </h3>
+      </div>
+      <div class='col-sm-12'>
+        <div class='row'>
+          <div class='col-sm-6'>
+            ${summary}
+          </div>
+          <div class='col-sm-6'>
+            ${latestReadings}
+          </div>
+        </div>
+      </div>
+      <div class='col-sm-12'>
+        <div class='c-readings-graph ct-chart ct-double-octave' ${dsi}></div>
+      </div>
+    </div>`;
 }
 
 
