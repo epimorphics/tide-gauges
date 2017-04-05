@@ -35,10 +35,6 @@ function stationSummary(station) {
     buf.push(`<li>Grid ref: ${station.get('gridReference')}</li>`);
   }
 
-  if (station.get('eaRegionName')) {
-    buf.push(`<li>EA region: ${station.get('eaRegionName')}</li>`);
-  }
-
   buf.push('</ul>');
   return buf.join('\n');
 }
