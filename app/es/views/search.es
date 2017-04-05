@@ -97,6 +97,8 @@ class SearchView {
           this.postcodeSearch(searchStr);
         }
       });
+    } else {
+      this.clearCurrentSearchResults();
     }
   }
 
