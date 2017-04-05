@@ -45,7 +45,7 @@ class SearchView {
       e.preventDefault();
       onSearchBound();
     });
-    this.ui().searchResults.on('change', '.o-search-results--result input', onChangeSelected);
+    this.ui().searchResults.on('click', '.o-search-results--result a', onChangeSelected);
     this.ui().searchResults.on('click', '.js-action-show-all', (e) => {
       e.preventDefault();
       onSearchBound(e, true);
@@ -66,9 +66,15 @@ class SearchView {
    * User has changed the selected status of a station
    */
   onChangeSelected(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    this.clearCurrentSearchResults();
+    this.ui().searchField.val('');
+
     const elem = $(e.currentTarget);
     const stationId = String(elem.parents('[data-notation]').data('notation'));
-    const selected = elem.is(':checked');
+    const selected = true;
 
     this.refSelectedStations.setSelected(stationId, selected);
     triggerSelected(stationId, selected);
@@ -176,17 +182,8 @@ class SearchView {
 
   /** @return A formatted search result */
   presentResult(result) {
-    const selected = this.presentSelectedStatus(result);
     return `<li class='o-search-results--result' data-notation='${result.notation()}'>` +
-           `<label>${selected} ${result.label()}</label></li>\n`;
-  }
-
-  /** @return Markup to show if an item is selected */
-  presentSelectedStatus(result) {
-    const stationId = result.notation();
-    const isChecked = this.refSelectedStations.isSelected(stationId) ? 'checked' : '';
-
-    return `<input class='js-action-selected' ${isChecked} type='checkbox' name='${stationId}'></input>`;
+           `<a href="#">${result.label()}</a></li>\n`;
   }
 
   /**
