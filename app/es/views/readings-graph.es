@@ -76,7 +76,7 @@ class ReadingsGraphView {
   collectMeasures(measures) {
     displayLatest(latestMeasure(measures), this.stationRef);
     const totals = aggregateMeasures(measures);
-    const datumStr = userPreferences.measure === 'local' ? 'm LD' : 'm OD';
+    const datumStr = userPreferences.measure === 'local' ? 'm Local Datum' : 'm Ordnance Datum';
     new Dygraph($(`li[data-station-id='${this.stationRef}'] .ct-chart`).css({
       width: 'auto',
     }).get(0),
