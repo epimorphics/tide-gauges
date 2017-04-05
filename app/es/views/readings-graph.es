@@ -4,7 +4,8 @@ import _ from 'lodash';
 import $ from 'jquery';
 import moment from 'moment';
 import Dygraph from 'dygraphs';
-import { stationMeasures } from '../services/gauge-api.es';
+import { stationMeasures, stationAlternative } from '../services/gauge-api.es';
+import userPreferences from '../services/user-preferences.es';
 
 const DEFAULT_LIMIT = 3000; // 2976 for a month of results. 4 (hour) * 24 (day) * 31
 
@@ -27,10 +28,13 @@ function latestMeasure(measures) {
 
 /* Return the period over which we display */
 function readingDisplayPeriod() {
-  return moment
-    .utc()
-    .subtract(1, 'months')
-    .format();
+  const time = moment.utc();
+  if (userPreferences.filter && userPreferences.filter !== 30) {
+    time.subtract(userPreferences.filter, 'days');
+  } else {
+    time.subtract(1, 'months');
+  }
+  return time.format();
 }
 
 /* Show the latest values for the given station */
@@ -48,9 +52,21 @@ function displayLatest(latest, stationId) {
  * given station and displaying that as a graph
  */
 class ReadingsGraphView {
-  constructor(station) {
-    this.stationRef = station;
-    stationMeasures(station.stationId(), {
+  constructor() {
+    this.stationRef = userPreferences.station;
+
+    if (userPreferences.measure === 'local') {
+      stationAlternative(this.stationRef).then((altId) => {
+        this.stationRef = altId;
+        this.loadData();
+      });
+    } else {
+      this.loadData();
+    }
+  }
+
+  loadData() {
+    stationMeasures(this.stationRef, {
       since: readingDisplayPeriod(),
       _limit: DEFAULT_LIMIT,
       _sorted: true,
@@ -58,17 +74,17 @@ class ReadingsGraphView {
   }
 
   collectMeasures(measures) {
-    displayLatest(latestMeasure(measures), this.stationRef.stationId());
+    displayLatest(latestMeasure(measures), this.stationRef);
     const totals = aggregateMeasures(measures);
-    const stationId = this.stationRef.stationId();
-    new Dygraph($(`li[data-station-id='${stationId}'] .ct-chart`).css({
+    const datumStr = userPreferences.measure === 'local' ? 'm LD' : 'm OD';
+    new Dygraph($(`li[data-station-id='${this.stationRef}'] .ct-chart`).css({
       width: 'auto',
     }).get(0),
       totals, {
         fillGraph: true,
         labels: ['date', 'm'],
         xlabel: 'Date',
-        ylabel: 'mOD',
+        ylabel: datumStr,
         sigFigs: 2,
       });
   }

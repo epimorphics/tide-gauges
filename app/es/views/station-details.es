@@ -3,6 +3,7 @@ import _ from 'lodash';
 import { stationWithId } from '../models/stations.es';
 import GraphView from './readings-graph.es';
 import userPreferences from '../services/user-preferences.es';
+import { stationAlternative } from '../services/gauge-api.es';
 
 /* Support functions */
 
@@ -53,6 +54,10 @@ function stationLatestReading(station) {
     </ul>`;
 }
 
+function optionSelected(val, expected) {
+  return val === expected ? 'selected' : '';
+}
+
 function stationDescription(station) {
   const dsi = `data-station-id='${station.stationId()}'`;
   const dsn = `data-station-name='${station.label()}'`;
@@ -64,13 +69,13 @@ function stationDescription(station) {
       <div class='col-sm-12'>
         <div class='pull-right'>
           <select class="c-data-filter">
-            <option value="30">30 Days</option>
-            <option value="7">7 Days</option>
-            <option value="1">1 Day</option>
+            <option value="30" ${optionSelected(userPreferences.filter, '30')}>30 Days</option>
+            <option value="7" ${optionSelected(userPreferences.filter, '7')}>7 Days</option>
+            <option value="1" ${optionSelected(userPreferences.filter, '1')}>1 Day</option>
           </select>
           <select class="c-data-measure">
-            <option value="ordnance">Ordnance Datum</option>
-            <option value="local">Local Datum</option>
+            <option value="ordnance" ${optionSelected(userPreferences.measure, 'ordnance')}>Ordnance Datum</option>
+            <option value="local" ${optionSelected(userPreferences.measure, 'local')}>Local Datum</option>
           </select>
         </div>
         <h3 class='c-station-detail--title'>${label}
@@ -100,6 +105,7 @@ function showOrHidePrompt() {
 }
 
 function onChangeMeasure(e) {
+  // Find new station ID based on this
   userPreferences.measure = e.target.value;
   $('body').trigger('map.selected', [userPreferences.station, true]);
 }
@@ -125,13 +131,25 @@ class StationDetailsView {
 
   onStationSelected(event, stationId, selected) {
     removeAllStationDetails();
-    stationWithId(stationId).then((station) => {
-      if (station && selected) {
-        this.showStationDetails(station);
-      } else if (station) {
-        removeStationDetails(station);
-      }
+    // Get correct station ID internally
+    if (!selected) {
+      showOrHidePrompt();
+      return;
+    }
 
+    if (userPreferences.measure === 'local') {
+      stationAlternative(stationId).then((altId) => {
+        this.dataStationRef = altId;
+        this.loadData(altId);
+      });
+    } else {
+      this.loadData(stationId);
+    }
+  }
+
+  loadData(stationId) {
+    stationWithId(stationId).then((station) => {
+      this.showStationDetails(station);
       showOrHidePrompt();
     });
   }
