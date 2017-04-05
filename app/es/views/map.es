@@ -4,10 +4,13 @@ import L from 'leaflet';
 import _ from 'lodash';
 import $ from 'jquery';
 import { stationsCollection } from '../models/stations.es';
+import userPreferences from '../services/user-preferences.es';
 
 require('leaflet.markercluster');
 
 /* Support functions */
+
+let selectedMarker;
 
 /* Return the marker for a selected site */
 function selectedMarkerIcon() {
@@ -24,6 +27,7 @@ function markerIconForStatus(selected) {
 
 /** Notify other components that the selection state has changed */
 function triggerSelected(stationId, selected) {
+  userPreferences.station = stationId;
   $('body').trigger('map.selected', [stationId, selected]);
 }
 
@@ -38,10 +42,24 @@ function selectMarker(marker, selected, noTrigger) {
   }
 }
 
+function onMarkerClick(e) {
+  const marker = e.target;
+  if (selectedMarker) { // De-select previous marker
+    selectMarker(selectedMarker, false);
+  }
+  if (selectedMarker !== marker) {
+    selectedMarker = marker;
+    selectMarker(marker, true);
+  } else {
+    selectedMarker = null;
+    selectMarker(marker, false);
+  }
+}
+
 
 class MapView {
-  constructor(selectedStations) {
-    this.selectedStationsRef = selectedStations;
+  constructor(selectedStation) {
+    this.selectedStation = selectedStation;
     this.initMap();
     this.addStationMarkers();
     this.initEvents();
@@ -71,22 +89,20 @@ class MapView {
     const map = this.mapRef;
 
     stationsCollection().then((stations) => {
-      const markers = [];
+      const markersGroup = L.featureGroup();
 
       _.each(stations, (station) => {
         if (station.locationWgs84().isDefined()) {
-          markers.push(createMarkerFn(station));
+          markersGroup.addLayer(createMarkerFn(station));
         }
       });
 
-      const markersGroup = L.markerClusterGroup();
-      markersGroup.addLayers(markers);
       map.addLayer(markersGroup);
     });
   }
 
   createMarkerFor(station) {
-    const icon = this.markerIcon(station);
+    const icon = markerIconForStatus(false);
     const marker = L.marker(station.locationWgs84().asLatLng(), {
       icon,
       title: station.label(),
@@ -94,22 +110,12 @@ class MapView {
       selected: false,
     });
 
-    marker.on('click', _.bind(this.onMarkerClick, this));
+    marker.bindTooltip(station.get('label'), {
+    //  permanent: true,
+    }).openTooltip();
+
+    marker.on('click', _.bind(onMarkerClick, this));
     return marker;
-  }
-
-  markerIcon(station) {
-    return markerIconForStatus(
-      this.selectedStationsRef.isSelected(station),
-   );
-  }
-
-  onMarkerClick(e) {
-    const marker = e.target;
-    const stationId = marker.options.stationId;
-    const nowSelected = !this.selectedStationsRef.isSelected(stationId);
-    this.selectedStationsRef.setSelected(stationId, nowSelected);
-    selectMarker(marker, nowSelected);
   }
 
   // events
@@ -119,8 +125,12 @@ class MapView {
     const selectMarkerFn = _.bind(selectMarker, this);
 
     this.mapRef.eachLayer((layer) => {
-      if (layer.options.stationId === stationId && layer.options.selected !== selected) {
-        selectMarkerFn(layer, selected, true);
+      if (layer instanceof L.Marker) {
+        if (layer.options.stationId === stationId) {
+          selectMarkerFn(layer, selected, true);
+        } else {
+          selectMarkerFn(layer, false, true);
+        }
       }
     });
   }

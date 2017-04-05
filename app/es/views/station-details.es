@@ -2,8 +2,13 @@ import $ from 'jquery';
 import _ from 'lodash';
 import { stationWithId } from '../models/stations.es';
 import GraphView from './readings-graph.es';
+import userPreferences from '../services/user-preferences.es';
 
 /* Support functions */
+
+function removeAllStationDetails() {
+  $('.c-station-detail').remove();
+}
 
 function removeStationDetails(station) {
   $(`.c-station-detail[data-station-id='${station.notation()}']`).remove();
@@ -57,6 +62,17 @@ function stationDescription(station) {
 
   return `<div class='row'>
       <div class='col-sm-12'>
+        <div class='pull-right'>
+          <select class="c-data-filter">
+            <option value="30">30 Days</option>
+            <option value="7">7 Days</option>
+            <option value="1">1 Day</option>
+          </select>
+          <select class="c-data-measure">
+            <option value="ordnance">Ordnance Datum</option>
+            <option value="local">Local Datum</option>
+          </select>
+        </div>
         <h3 class='c-station-detail--title'>${label}
           <button type="button" class="c-api-details-btn js-action-show-api-details" ${dsi} ${dsn}>api details</button>
         </h3>
@@ -83,6 +99,16 @@ function showOrHidePrompt() {
   $('.o-station-details--list__default-message').toggleClass('hidden', hidePrompt);
 }
 
+function onChangeMeasure(e) {
+  userPreferences.measure = e.target.value;
+  $('body').trigger('map.selected', [userPreferences.station, true]);
+}
+
+function onChangeFilter(e) {
+  userPreferences.filter = e.target.value;
+  $('body').trigger('map.selected', [userPreferences.station, true]);
+}
+
 /**
  * A view that maintains a list of the selected stations shown with details */
 class StationDetailsView {
@@ -92,9 +118,13 @@ class StationDetailsView {
 
   initEvents() {
     $('body').on('map.selected', _.bind(this.onStationSelected, this));
+    // Set measure type
+    $('body').on('change', '.c-data-measure', onChangeMeasure);
+    $('body').on('change', '.c-data-filter', onChangeFilter);
   }
 
   onStationSelected(event, stationId, selected) {
+    removeAllStationDetails();
     stationWithId(stationId).then((station) => {
       if (station && selected) {
         this.showStationDetails(station);

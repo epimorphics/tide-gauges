@@ -1,6 +1,7 @@
 import { matchStations } from '../models/stations.es';
 import lookupPostcode from '../services/postcodes-api.es';
 import { allStations } from '../services/gauge-api.es';
+import userPreferences from '../services/user-preferences.es';
 
 const $ = require('jquery');
 const _ = require('lodash');
@@ -28,8 +29,7 @@ function triggerSelected(stationId, selected) {
  */
 class SearchView {
 
-  constructor(selectedStations) {
-    this.refSelectedStations = selectedStations;
+  constructor() {
     this.initEvents();
   }
 
@@ -76,7 +76,8 @@ class SearchView {
     const stationId = String(elem.parents('[data-notation]').data('notation'));
     const selected = true;
 
-    this.refSelectedStations.setSelected(stationId, selected);
+    userPreferences.station = stationId;
+
     triggerSelected(stationId, selected);
   }
 
@@ -210,7 +211,6 @@ class SearchView {
 
   /** Ensure that checkbox state stays in sync with changes to selected state */
   onStationSelected(event, stationId, selected) {
-    this.refSelectedStations.setSelected(stationId, selected);
     $(`[data-notation=${stationId}] input`).prop('checked', selected);
   }
 }
