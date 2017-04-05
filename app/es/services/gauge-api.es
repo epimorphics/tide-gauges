@@ -67,6 +67,23 @@ export function stationDetails(stationId) {
 }
 
 /**
+ * @return A promise of the alternative station ID for a given station
+ * @param {String} The ID of the station for which data is requested
+ * @param {Object} Additional parameters, e.g. the limit and time period
+ */
+export function stationAlternative(stationId) {
+  return getJSON(`${STATIONS_ENDPOINT}/${stationId}/linked`)
+    .then(resultItems)
+    .then((items) => {
+      const item = items[0]; // First item
+      // Search for either property
+      const itemUrl = item.localDatumStation || item.ordnanceDatumStation;
+      return itemUrl.split('/').pop(); // Get last part of URL
+    });
+}
+
+
+/**
  * @return A promise of a collection of station readings for a given
  * time period
  * @param {String} The ID of the station for which data is requested
