@@ -11,7 +11,7 @@ The Environment Agency publish a range of linked open datasets, including readin
   * for the selected station, present key information from the underlying linked data, show the latest tide gauge reading and show a graph of historical tide gauge readings over the previous month
   * provide a cheat-sheet of example API endpoints for features of a given station
 
-![screenshot of demo app](https://github.com/epimorphics/rainfall-api-demonstrator/blob/master/docs/screenshot.png?raw=true "Tide Gauge App")
+![screenshot of demo app](https://github.com/epimorphics/tide-gauges/blob/master/docs/screenshot.png?raw=true "Tide Gauge App")
 
 ## Code layout
 
