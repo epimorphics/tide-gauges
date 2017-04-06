@@ -29,8 +29,8 @@ function latestMeasure(measures) {
 /* Return the period over which we display */
 function readingDisplayPeriod() {
   const time = moment.utc();
-  if (userPreferences.filter && userPreferences.filter !== 30) {
-    time.subtract(userPreferences.filter, 'days');
+  if (userPreferences.get('filter') && userPreferences.get('filter') !== 30) {
+    time.subtract(userPreferences.get('filter'), 'days');
   } else {
     time.subtract(1, 'months');
   }
@@ -53,9 +53,9 @@ function displayLatest(latest, stationId) {
  */
 class ReadingsGraphView {
   constructor() {
-    this.stationRef = userPreferences.station;
+    this.stationRef = userPreferences.get('station');
 
-    if (userPreferences.measure === 'local') {
+    if (userPreferences.get('measure') === 'local') {
       stationAlternative(this.stationRef).then((altId) => {
         this.stationRef = altId;
         this.loadData();
@@ -76,7 +76,7 @@ class ReadingsGraphView {
   collectMeasures(measures) {
     displayLatest(latestMeasure(measures), this.stationRef);
     const totals = aggregateMeasures(measures);
-    const datumStr = userPreferences.measure === 'local' ? 'm Local Datum' : 'm Ordnance Datum';
+    const datumStr = userPreferences.get('measure') === 'local' ? 'm Local Datum' : 'm Ordnance Datum';
     new Dygraph($(`li[data-station-id='${this.stationRef}'] .ct-chart`).css({
       width: 'auto',
     }).get(0),

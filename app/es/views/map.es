@@ -27,13 +27,13 @@ function markerIconForStatus(selected) {
 
 /** Notify other components that the selection state has changed */
 function triggerSelected(stationId, selected) {
-  userPreferences.station = stationId;
+  userPreferences.set('station', selected ? stationId : undefined);
   $('body').trigger('map.selected', [stationId, selected]);
 }
 
 /** Select the given marker */
 function selectMarker(marker, selected, noTrigger) {
-  if (marker.options.selected !== selected) {
+  if (marker.options.selected !== selected) { // If changing state
     marker.options.selected = selected;
     marker.setIcon(markerIconForStatus(selected));
     if (!noTrigger) {
@@ -58,8 +58,7 @@ function onMarkerClick(e) {
 
 
 class MapView {
-  constructor(selectedStation) {
-    this.selectedStation = selectedStation;
+  constructor() {
     this.initMap();
     this.addStationMarkers();
     this.initEvents();
@@ -108,6 +107,10 @@ class MapView {
       });
 
       map.addLayer(markersGroup);
+    }).then(() => {
+      if (userPreferences.get('station')) {
+        this.onStationSelected(null, userPreferences.get('station'), true);
+      }
     });
   }
 

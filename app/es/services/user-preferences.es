@@ -23,11 +23,11 @@ class UserPreferences {
   }
 
   /**
-   * @param params If defined, use the `.location.search` property as the source
+   * @param params If defined, use the `.location.hash` property as the source
    * to parse the current state. If not defined, use `window.location.search`.
    */
   constructor(params) {
-    this.preferences = queryString.parse((params || window).location.search);
+    this.preferences = queryString.parse((params || window).location.hash);
     this.initialiseValues();
     this.bindEvents();
   }
@@ -37,6 +37,17 @@ class UserPreferences {
    * Listen to changes in the fields representing model values
    */
   bindEvents() {
+  }
+
+  get(param) {
+    return this.preferences[param];
+  }
+
+  set(param, val) {
+    this.preferences[param] = val;
+
+    const stringified = queryString.stringify(this.preferences);
+    location.hash = stringified;
   }
 
   /**
@@ -51,4 +62,7 @@ class UserPreferences {
   }
 }
 
-export { UserPreferences as default };
+const rtn = UserPreferences.currentPreference();
+window.prefs = rtn;
+
+export { rtn as default };

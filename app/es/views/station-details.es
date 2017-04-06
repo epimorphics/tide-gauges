@@ -11,10 +11,6 @@ function removeAllStationDetails() {
   $('.c-station-detail').remove();
 }
 
-function removeStationDetails(station) {
-  $(`.c-station-detail[data-station-id='${station.notation()}']`).remove();
-}
-
 function stationSummary(station) {
   const buf = [
     "<ul class='c-station-detail--summary-list'>",
@@ -65,13 +61,13 @@ function stationDescription(station) {
       <div class='col-sm-12'>
         <div class='pull-right'>
           <select class="c-data-filter">
-            <option value="30" ${optionSelected(userPreferences.filter, '30')}>30 Days</option>
-            <option value="7" ${optionSelected(userPreferences.filter, '7')}>7 Days</option>
-            <option value="1" ${optionSelected(userPreferences.filter, '1')}>1 Day</option>
+            <option value="30" ${optionSelected(userPreferences.get('filter'), '30')}>30 Days</option>
+            <option value="7" ${optionSelected(userPreferences.get('filter'), '7')}>7 Days</option>
+            <option value="1" ${optionSelected(userPreferences.get('filter'), '1')}>1 Day</option>
           </select>
           <select class="c-data-measure">
-            <option value="ordnance" ${optionSelected(userPreferences.measure, 'ordnance')}>Ordnance Datum</option>
-            <option value="local" ${optionSelected(userPreferences.measure, 'local')}>Local Datum</option>
+            <option value="ordnance" ${optionSelected(userPreferences.get('measure'), 'ordnance')}>Ordnance Datum</option>
+            <option value="local" ${optionSelected(userPreferences.get('measure'), 'local')}>Local Datum</option>
           </select>
         </div>
         <h3 class='c-station-detail--title'>${label}
@@ -102,13 +98,13 @@ function showOrHidePrompt() {
 
 function onChangeMeasure(e) {
   // Find new station ID based on this
-  userPreferences.measure = e.target.value;
-  $('body').trigger('map.selected', [userPreferences.station, true]);
+  userPreferences.set('measure', e.target.value);
+  $('body').trigger('map.selected', [userPreferences.get('station'), true]);
 }
 
 function onChangeFilter(e) {
-  userPreferences.filter = e.target.value;
-  $('body').trigger('map.selected', [userPreferences.station, true]);
+  userPreferences.set('filter', e.target.value);
+  $('body').trigger('map.selected', [userPreferences.get('station'), true]);
 }
 
 /**
@@ -116,6 +112,9 @@ function onChangeFilter(e) {
 class StationDetailsView {
   constructor() {
     this.initEvents();
+    if (userPreferences.get('station')) {
+      this.onStationSelected(null, userPreferences.get('station'), true);
+    }
   }
 
   initEvents() {
@@ -133,10 +132,10 @@ class StationDetailsView {
       return;
     }
 
-    if (userPreferences.measure === 'local') {
+    if (userPreferences.get('measure') === 'local') {
       stationAlternative(stationId).then((altId) => {
         this.dataStationRef = altId;
-        this.loadData(altId);
+        this.loadData(this.dataStationRef);
       });
     } else {
       this.loadData(stationId);

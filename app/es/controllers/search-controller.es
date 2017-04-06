@@ -8,8 +8,8 @@ import userPreferences from '../services/user-preferences.es';
 class SearchController {
   constructor() {
     this.views = {
-      searchView: new SearchView(userPreferences.selected),
-      mapView: new MapView(userPreferences.station),
+      searchView: new SearchView(userPreferences.get('selected')),
+      mapView: new MapView(userPreferences.get('station')),
       detailsView: new StationDetailsView(),
       apiDetailsView: new ApiDetailsView(),
     };

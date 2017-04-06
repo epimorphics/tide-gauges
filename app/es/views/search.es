@@ -79,7 +79,7 @@ class SearchView {
     const stationId = String(elem.parents('[data-notation]').data('notation'));
     const selected = true;
 
-    userPreferences.station = stationId;
+    userPreferences.set('station', stationId);
 
     triggerSelected(stationId, selected);
   }
