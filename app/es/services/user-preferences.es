@@ -24,10 +24,14 @@ class UserPreferences {
 
   /**
    * @param params If defined, use the `.location.hash` property as the source
-   * to parse the current state. If not defined, use `window.location.search`.
+   * to parse the current state. If not defined, use `window.location.hash`.
    */
   constructor(params) {
-    this.preferences = queryString.parse((params || window).location.hash);
+    const parsed = queryString.parse(window.location.hash);
+    this.preferences = parsed;
+    if (Object.keys(this.preferences).length === 0) {
+      this.preferences = params;
+    }
     this.initialiseValues();
     this.bindEvents();
   }
@@ -62,7 +66,6 @@ class UserPreferences {
   }
 }
 
-const rtn = UserPreferences.currentPreference();
-window.prefs = rtn;
+const rtn = UserPreferences.currentPreference({ filter: '7' });
 
 export { rtn as default };
