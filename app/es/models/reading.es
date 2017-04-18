@@ -22,7 +22,7 @@ export class Reading {
   }
 
   dateTime() {
-    return moment(this.dateTimeStr()).utc();
+    return moment(this.dateTimeStr());
   }
 
   jsDate() {
