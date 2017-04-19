@@ -1,6 +1,6 @@
 # Tide Gauge App
 
-The Environment Agency publish a range of linked open datasets, including readings from tide gauges around England. Current and historical data from these gaages is availble via an [API](http://environment.data.gov.uk/flood-monitoring/doc/tidegauge).
+The Environment Agency publish a range of linked open datasets, including readings from tide gauges around England. Current and historical data from these gauges is availble via an [API](http://environment.data.gov.uk/flood-monitoring/doc/tidegauge).
 
 ## Application features
 
